@@ -49,7 +49,22 @@ def dashboard(request):
 
 @login_required
 def profile(request):
-    return render(request,'profile.html')
+    user = request.user
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST,request.FILES,instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Profile edited successfully")
+            return redirect('profile')
+        else:
+            # If the form is invalid, iterate over errors and display them
+            for field_name, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field_name}: {error}")
+    context = {
+        "form":ProfileEditForm(instance=user)
+    }
+    return render(request,'profile.html',context)
 
 @login_required
 def signout(request):
