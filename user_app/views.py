@@ -3,6 +3,8 @@ from .forms import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
+import re
 
 def signin(request):
     if request.method == 'POST':
@@ -72,3 +74,39 @@ def user_lists(request):
         "user_objs":user_objs,
     }
     return render(request,"user_view.html",context)
+
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        if password1 != password2:
+            messages.error(request, "Passwords do not match.")
+            return redirect("profile")
+
+        if len(password1) < 8:
+            messages.error(request, "Password must be at least 8 characters long.")
+            return redirect("profile")
+        
+        if not any(char.isupper() for char in password1):
+            messages.error(request, "Password must contain at least one uppercase letter.")
+            return redirect("profile")
+
+        # Check for at least one special character
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password1):
+            messages.error(request, "Password must contain at least one special character (!, @, #, $, etc.).")
+            return redirect("profile")
+
+        # Set the new password
+        request.user.password = make_password(password1)
+        request.user.save()
+
+        messages.success(request, "Your password has been updated successfully.")
+        return redirect("profile")
+    else:
+        messages.error(request,"Method not allowed")
+        return redirect("profile")
+        

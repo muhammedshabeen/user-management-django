@@ -81,6 +81,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#setting" role="tab">Settings</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#password" role="tab">Password</a>
+                                </li>
                             </ul>
                             <div class="tab-content">
                                 
@@ -136,6 +139,52 @@
                                         </form>
                                     </div>
                                 </div>
+                                <div class="tab-pane fade show active height-100-p" id="password" role="tabpanel">
+                                    <div class="profile-setting">
+                                             <!-- Form for updating profile details -->
+                                            {% csrf_token %}
+                                            <!-- CSRF token for security -->
+                                             
+                                            <div class="col-md-12">
+                                                
+                                                    <div class="login-title"><br><br>
+                                                        <h2 class="text-center text-primary">Change Password</h2>
+                                                    </div><br>
+                                                    <h6 class="mb-20">Enter your new password, confirm and submit</h6>
+                                                    <form method="post" action="{% url 'change_password' %}" onsubmit="return validatePassword()">
+                                                        {% csrf_token %}
+                                                        <div class="input-group custom">
+                                                            <input type="password" id="new_password" name="password1" class="form-control form-control-lg" placeholder="New Password" required>
+                                                            <div class="input-group-append custom">
+                                                                <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="input-group custom mt-3">
+                                                            <input type="password" id="confirm_password" name="password2" class="form-control form-control-lg" placeholder="Confirm New Password" required>
+                                                            <div class="input-group-append custom">
+                                                                <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="password_error" class="text-danger mt-2"></div>
+                                                        <ul id="password_requirements" class="text-muted mt-2">
+                                                            <li>Password must be at least 8 characters long.</li>
+                                                            <li>Password must include at least one uppercase letter.</li>
+                                                            <li>Password must include at least one special character (e.g., !, @, #, $).</li>
+                                                        </ul>
+                                                        <div class="row align-items-center mt-4">
+                                                            <div class="col-5">
+                                                                <div class="form-group mb-0">
+                                                                    <input type="submit" class="btn btn-primary" value="Update Information">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                
+                                            </div>
+                                            
+                                        
+                                    </div>
+                                </div>
                                 <!-- Setting Tab End -->
                             </div>
                         </div>
@@ -185,5 +234,42 @@
             }
         });
     });
+</script>
+
+<script>
+    function validatePassword() {
+        const password = document.getElementById('new_password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        const errorDiv = document.getElementById('password_error');
+
+        // Clear previous error messages
+        errorDiv.textContent = '';
+
+        // Check password length
+        if (password.length < 8) {
+            errorDiv.textContent = 'Password must be at least 8 characters long.';
+            return false;
+        }
+
+        // Check for at least one uppercase letter
+        if (!/[A-Z]/.test(password)) {
+            errorDiv.textContent = 'Password must include at least one uppercase letter.';
+            return false;
+        }
+
+        // Check for at least one special character
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            errorDiv.textContent = 'Password must include at least one special character.';
+            return false;
+        }
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            errorDiv.textContent = 'Passwords do not match.';
+            return false;
+        }
+
+        return true;
+    }
 </script>
 {% endblock %}
