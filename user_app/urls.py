@@ -7,4 +7,7 @@ urlpatterns = [
     path('dashboard',dashboard,name='dashboard'),
     path('profile',profile,name='profile'),
     path('signout',signout,name='signout'),
+    
+    #ViewCustomer
+    path('users-view',user_lists,name="user_lists"),
 ]

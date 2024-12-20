@@ -10,16 +10,9 @@ def signin(request):
         password = request.POST.get('password')
         user = authenticate(request,email=email,password=password)
         if user is not None:
-            if user.user_type == 'User' :
-                login(request,user)
-                messages.success(request,"Logined Successfully")
-                return redirect('dashboard')
-            elif user.user_type == 'Admin':
-                login(request,user)
-                messages.success(request,"Logined Successfully")
-                return redirect('dashboard')
-            else:
-                messages.error(request,"You don't have access this page")
+            login(request,user)
+            messages.success(request,"Logined Successfully")
+            return redirect('dashboard')
         else:
             messages.error(request,"Incorrect Username and Password!!")
     return render(request,'registration/signin.html')
@@ -71,3 +64,11 @@ def signout(request):
     logout(request)
     messages.success(request,"Logout Succesfully")
     return redirect('signin')
+
+@login_required
+def user_lists(request):
+    user_objs= CustomUser.objects.filter().exclude(is_superuser=True).order_by('-id')
+    context = {
+        "user_objs":user_objs,
+    }
+    return render(request,"user_view.html",context)

@@ -1,0 +1,88 @@
+{% extends "base/index.html" %}
+
+{% block title %}Customer{% endblock %}
+
+
+{% block content %}
+<style>
+    td a i {
+        margin-right: 10px;  /* Space between icons */
+        font-size: 20px;     /* Size of the icons */
+        transition: color 0.3s ease; /* Smooth transition for color change */
+        cursor: pointer;    /* Change cursor to pointer to indicate it's clickable */
+    }
+
+    /* Hover effect for the icons */
+    td a i:hover {
+        color: #007bff; /* Change color to blue when hovered */
+    }
+
+    /* Optional: Add color-specific styles for each action */
+    .micon.dw-eye:hover {
+        color: #28a745; /* Green for View icon on hover */
+    }
+
+    .micon.dw-edit:hover {
+        color: #17a2b8; /* Blue for Edit icon on hover */
+    }
+
+    .micon.dw-trash:hover {
+        color: #dc3545; /* Red for Delete icon on hover */
+    }   
+    .rounded-image {
+        width: 50px; 
+        height: 50px; 
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ddd;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+</style>
+<div class="pd-20 card-box mb-30">
+    <div class="clearfix mb-20">
+        <div class="pull-left">
+            <h4 class="text-blue h4">customers</h4>
+        </div>
+        <div class="pull-right">
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Email</th>
+                <th scope="col">Username</th>
+                <th scope="col">D.O.B</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Image</th>
+                <th scope="col">Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if user_objs %}
+            {% for user_obj in user_objs %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{user_obj.email}}</td>
+                <td>{{user_obj.username}}</td>
+                <td>{{user_obj.d_o_b|date:"d/m/Y"}}</td>
+                <td>{{user_obj.phone_number}}</td>
+                <td>{{user_obj.gender}}</td>
+                <td>
+                    <img src="{{user_obj.image.url}}" class="rounded-image">
+                </td>
+                <td>{{user_obj.address}}</td>
+            </tr>
+            {% endfor %}
+            {% else  %}
+            <tr>
+                <td colspan="5" class="text-center"><h4>Not Found</h4></td>
+            </tr>
+            {% endif %}
+            
+        </tbody>
+    </table>
+</div>
+{% endblock%}
