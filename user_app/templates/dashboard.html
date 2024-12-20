@@ -1,0 +1,21 @@
+<!-- This template extends 'index.html' for layout, sets the page title as 'Dashboard', and dynamically displays the logged-in user's username within a styled container. -->
+{% extends "base/index.html" %}
+<!-- This template extends the base 'index.html' to inherit the overall layout -->
+
+{% block title %}Dashboard{% endblock %}
+<!-- Sets the title of the page to 'Dashboard' -->
+
+{% block content %}
+<!-- The main content block for the dashboard page -->
+
+<div class="pd-ltr-20">
+    <!-- Container div with padding for better spacing -->
+    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+        <!-- Container div with padding for better spacing -->
+        <h1>Welcome, {{ request.user.username }}</h1>
+        <!-- Displays the currently logged-in user's username dynamically -->
+    </div>
+</div>
+
+{% endblock %}
+<!-- End of content block -->
