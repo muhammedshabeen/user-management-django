@@ -1,0 +1,56 @@
+# Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Django-specific files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+*.log
+*.bak
+*.swp
+
+# Media and static files
+/media/
+
+# Environment and virtual environment files
+*.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+
+# MySQL and PostgreSQL databases
+*.sql
+*.sqlite3
+
+# Coverage reports and other temporary files
+.coverage
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Ignore all files in migrations folder
+**/migrations/*
+
+# Do not ignore __init__.py files in migrations folders
+!**/migrations/__init__.py
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# MacOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+
+# Python virtual environments (optional)
+*.env
