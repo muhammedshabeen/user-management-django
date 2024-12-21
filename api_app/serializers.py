@@ -58,3 +58,28 @@ class RegisterSerializer(serializers.ModelSerializer):
             image=validated_data.get('image')
         )
         return user
+    
+    
+
+class ProfileEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'username', 'address', 'phone_number', 'd_o_b', 'gender', 'image']
+
+    def validate_phone_number(self, value):
+        if not value.isdigit() or len(value) != 10:
+            raise serializers.ValidationError("Phone number must be exactly 10 digits and numeric.")
+        return value
+
+    def validate_d_o_b(self, value):
+        if value and value.strftime('%Y/%m/%d') != value.strftime('%Y/%m/%d'):
+            raise serializers.ValidationError("Date of birth must be in YYYY/MM/DD format.")
+        return value
+
+    def validate_image(self, value):
+        allowed_extensions = ['png', 'jpg', 'jpeg']
+        if value:
+            extension = value.name.split('.')[-1].lower()
+            if extension not in allowed_extensions:
+                raise serializers.ValidationError("Only PNG, JPG, and JPEG formats are allowed.")
+        return value

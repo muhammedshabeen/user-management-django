@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from user_app.models import *
-from .serializers import RegisterSerializer
+from .serializers import *
+from rest_framework.permissions import IsAuthenticated
 
 
 class RegisterView(APIView):
@@ -26,8 +27,6 @@ class LoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
         
-        print("EMAIL IS",email)
-        
         if not email or not password:
             return Response({"detail": "Email and password are required."})
 
@@ -47,3 +46,77 @@ class LoginView(APIView):
                 },
         })
             
+
+class ProfileView(APIView):
+    
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request):
+        user = request.user
+        serialzier = ProfileEditSerializer(user)
+        return Response({
+            "status":1,
+            "message":"success",
+            "data":serialzier.data
+        })
+    
+    def put(self,request):
+        user = request.user
+        serializer = ProfileEditSerializer(user, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "status":1,
+                "message": "Profile updated successfully.",
+                "data": serializer.data
+            })
+
+        return Response({
+            "status":0,
+            "message": "Profile update failed.",
+            "errors": serializer.errors
+        })
+        
+class PasswordChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        password1 = request.data.get('password')
+        confirm_password = request.data.get('confirm_password')
+
+        if not password1 == confirm_password:
+            return Response({
+                "status":0,
+                "message": "Passwords mismatched"
+                })
+
+        if len(confirm_password) < 8:
+            return Response({
+                "status":0,
+                "message": "Password must be at least 8 characters long."
+                             })
+        
+        if not any(char.isupper() for char in confirm_password):
+            return Response({
+                "status":0,
+                "message": "Password must contain at least one uppercase letter."
+                })
+        
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', confirm_password):
+            return Response({
+                "status":0,
+                "message": "Password must contain at least one special character."
+                })
+
+        user.set_password(confirm_password)
+        user.save()
+
+        Token.objects.filter(user=user).delete()
+        
+        return Response({
+            "status":1,
+            "message": "Password updated successfully."
+            })
+    
