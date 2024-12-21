@@ -119,4 +119,26 @@ class PasswordChangeView(APIView):
             "status":1,
             "message": "Password updated successfully."
             })
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        Token.objects.filter(user=request.user).delete()
+        return Response({
+            "status":1,
+            "message": "Logged out successfully."
+            })
+        
+class UserLists(APIView):
     
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request):
+        users = CustomUser.objects.exclude(is_superuser=True)
+        serializer = RegisterSerializer(users,many=True)
+        return Response({
+            "status":1,
+            "message":"success",
+            "data":serializer.data
+        })
